@@ -1,5 +1,5 @@
 import { get } from './get.js'
 
 export function testFetch() {
-    return get('/')
+    return get('/api/2')
 }
