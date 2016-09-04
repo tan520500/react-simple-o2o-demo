@@ -10,4 +10,6 @@ class User extends React.Component {
     }
 }
 
-export default User
+// 使用 require.ensure 异步加载，还不支持 ES6 的 export 
+// export default User
+module.exports = User

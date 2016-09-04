@@ -3,10 +3,6 @@ import { Router, Route, IndexRoute } from 'react-router'
 
 import App from '../containers'
 import Home from '../containers/Home'
-import City from '../containers/City'
-import User from '../containers/User'
-import Search from '../containers/Search'
-import Detail from '../containers/Detail'
 
 class RouterMap extends React.Component {
     render() {
@@ -14,10 +10,40 @@ class RouterMap extends React.Component {
             <Router history={this.props.history}>
                 <Route path='/' component={App}>
                     <IndexRoute component={Home}/>
-                    <Route path='/city' component={City}/>
-                    <Route path='/user' component={User}/>
-                    <Route path='/search/:type(/:keyword)' component={Search}/>
-                    <Route path='/detail/:id' component={Detail}/>
+
+                    {/* 选择城市页面 */}
+                    <Route path='/city' getComponent={(nextState, cb) => {
+                        require.ensure([], (require) => {
+                          cb(null, require('../containers/City'))
+                        })
+                    }}/>
+
+                    {/* 个人中心页面 */}
+                    <Route path='/user' getComponent={(nextState, cb) => {
+                        require.ensure([], (require) => {
+                          cb(null, require('../containers/User'))
+                        })
+                    }}/>
+
+                    {/* 索索页面 */}
+                    <Route path='/search/:type(/:keyword)' getComponent={(nextState, cb) => {
+                        require.ensure([], (require) => {
+                          cb(null, require('../containers/Search'))
+                        })
+                    }}/>
+                    
+                    {/* 商户详情页 */}
+                    <Route path='/detail/:id' getComponent={(nextState, cb) => {
+                        require.ensure([], (require) => {
+                          cb(null, require('../containers/Detail'))
+                        })
+                    }}/>
+
+                    <Route path="*" getComponent={(nextState, cb) => {
+                        require.ensure([], (require) => {
+                          cb(null, require('../containers/404'))
+                        })
+                    }}/>
                 </Route>
             </Router>
         )
