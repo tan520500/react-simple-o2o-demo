@@ -4,7 +4,8 @@ export default {
         try {
             value = localStorage.getItem(key)
         } catch (ex) {
-            console.error('localStorage.getItem报错, ', ex.message)
+            // 开发环境下提示error
+            __DEV__ && console.error('localStorage.getItem报错, ', ex.message)
         } finally {
             return value
         }
@@ -14,7 +15,8 @@ export default {
             // ios safari 无痕模式下，直接使用 localStorage.setItem 会报错
             localStorage.setItem(key, value)
         } catch (ex) {
-            console.error('localStorage.setItem报错, ', ex.message)
+            // 开发环境下提示 error
+            __DEV__ && console.error('localStorage.setItem报错, ', ex.message)
         }
     }
 }
