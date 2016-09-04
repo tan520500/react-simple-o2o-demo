@@ -27,7 +27,7 @@ module.exports = {
             { test: /\.(js|jsx)$/, exclude: /node_modules/, loader: 'babel' },
             { test: /\.less$/, exclude: /node_modules/, loader: 'style!css!postcss!less' },
             { test: /\.css$/, exclude: /node_modules/, loader: 'style!css!postcss' },
-            { test:/\.(png|gif|jpg|jpeg|bmp)$/i, loader:'url-loader?limit=5000' },  // 限制大小5kb 
+            { test:/\.(png|gif|jpg|jpeg|bmp)$/i, loader:'url-loader?limit=5000' },  // 限制大小5kb
             { test:/\.(png|woff|woff2|svg|ttf|eot)($|\?)/i, loader:'url-loader?limit=5000'} // 限制大小小于5k
         ]
     },
@@ -61,6 +61,10 @@ module.exports = {
     ],
 
     devServer: {
+        proxy: {
+            // ./mock/server.js 中其中的 mock 数据的 host 是 localhost:3000 ，这里做一个代理
+            "**": "http://localhost:3000"
+        },
         contentBase: "./public", //本地服务器所加载的页面所在的目录
         colors: true, //终端中输出结果为彩色
         historyApiFallback: true, //不跳转
