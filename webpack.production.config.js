@@ -7,7 +7,16 @@ module.exports = {
   entry: {
     app: path.resolve(__dirname, 'app/index.jsx'),
     // 将 第三方依赖 单独打包
-    vendor: ['react', 'react-dom', 'react-redux', 'react-router', 'redux']
+    vendor: [
+      'react', 
+      'react-dom', 
+      'react-redux', 
+      'react-router', 
+      'redux', 
+      'es6-promise', 
+      'whatwg-fetch', 
+      'immutable'
+    ]
   },
   output: {
     path: __dirname + "/build",
@@ -34,7 +43,7 @@ module.exports = {
 
   plugins: [
     // webpack 内置的 banner-plugin
-    new webpack.BannerPlugin("Copyright Flying Unicorns inc."),
+    new webpack.BannerPlugin("Copyright by wangfupeng1988@github.com."),
 
     // html 模板插件
     new HtmlWebpackPlugin({
