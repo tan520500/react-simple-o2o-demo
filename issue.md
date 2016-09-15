@@ -4,7 +4,7 @@
     - 介绍 webpack + react 的配置过程，保存到 getready-webpack 分支
     - （是否介绍 fis3 的配置？？？）
     - 介绍 React 基础知识，保存到 getready-react 分支
-    - 介绍 Immutable.js，保存到 getready-immutable
+    - 介绍 Immutable.js ，保存到 getready-immutable
     - 介绍 React-router ，保存到 getready-router 分支
     - 介绍 Redux ，保存到 getready-redux 分支
     - 介绍 React + React-router + redux 组合的开发流程，保存到 getready-combination 分支
