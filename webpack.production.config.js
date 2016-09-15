@@ -20,7 +20,7 @@ module.exports = {
   },
   output: {
     path: __dirname + "/build",
-    filename: "[name].[hash:8].js",
+    filename: "[name].[chunkhash:8].js",
     publicPath: '/'
   },
 
@@ -33,8 +33,8 @@ module.exports = {
         { test: /\.(js|jsx)$/, exclude: /node_modules/, loader: 'babel' },
         { test: /\.less$/, exclude: /node_modules/, loader: ExtractTextPlugin.extract('style', 'css!postcss!less') },
         { test: /\.css$/, exclude: /node_modules/, loader: ExtractTextPlugin.extract('style', 'css!postcss') },
-        { test:/\.(png|gif|jpg|jpeg|bmp)$/i, loader:'url-loader?limit=5000&name=img/[name].[hash:8].[ext]' },
-        { test:/\.(png|woff|woff2|svg|ttf|eot)($|\?)/i, loader:'url-loader?limit=5000&name=fonts/[name].[hash:8].[ext]'}
+        { test:/\.(png|gif|jpg|jpeg|bmp)$/i, loader:'url-loader?limit=5000&name=img/[name].[chunkhash:8].[ext]' },
+        { test:/\.(png|woff|woff2|svg|ttf|eot)($|\?)/i, loader:'url-loader?limit=5000&name=fonts/[name].[chunkhash:8].[ext]'}
     ]
   },
   postcss: [
@@ -68,12 +68,12 @@ module.exports = {
     }),
     
     // 分离CSS和JS文件
-    new ExtractTextPlugin('[name].[hash:8].css'), 
+    new ExtractTextPlugin('[name].[chunkhash:8].css'), 
     
     // 提供公共代码
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      filename: '[name].[hash:8].js'
+      filename: '[name].[chunkhash:8].js'
     }),
 
     // 可在业务 js 代码中使用 __DEV__ 判断是否是dev模式（dev模式下可以提示错误、测试报告等, production模式不提示）
