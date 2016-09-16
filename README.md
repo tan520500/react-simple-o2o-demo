@@ -1,3 +1,3 @@
 # react-simple-o2o-demo
 
-代码尚在开发中
+搭建 webpack + React 的前端开发环境

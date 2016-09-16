@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=dev webpack-dev-server --progress --colors",
-    "mock": "node --harmony ./mock/server.js",
     "build": "rm -rf ./build && NODE_ENV=production webpack --config ./webpack.production.config.js --progress --colors"
   },
   "author": "",
@@ -37,15 +36,7 @@
     "webpack-dev-server": "^1.15.0"
   },
   "dependencies": {
-    "es6-promise": "^3.2.1",
-    "immutable": "^3.8.1",
     "react": "^15.3.1",
-    "react-addons-css-transition-group": "^15.3.1",
-    "react-addons-pure-render-mixin": "^15.3.1",
-    "react-dom": "^15.3.1",
-    "react-redux": "^4.4.5",
-    "react-router": "^2.7.0",
-    "redux": "^3.5.2",
-    "whatwg-fetch": "^1.0.0"
+    "react-dom": "^15.3.1"
   }
 }
