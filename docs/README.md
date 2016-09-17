@@ -50,7 +50,7 @@ React 里面写模板要使用 jsx 语法，它其实和 html 很相似但是又
 
 jsx 中不能一次性返回零散的多个节点，如果有多个请包涵在一个节点中。例如，
 
-```
+```jsx
 // 三个 <p> 外面必须再包裹一层 <div>
 return (
   <div>
@@ -63,7 +63,7 @@ return (
 
 再例如：
 
-```
+```jsx
 // { } 中返回的两个 <p> 也要用 <div> 包裹
 return (
   <div>
@@ -84,7 +84,7 @@ return (
 
 jsx 中用`{/*  */}`的注释形式
 
-```
+```jsx
         return (
             // jsx 外面的注释
             <div>
@@ -104,7 +104,7 @@ css样式：`<p className="class1">hello world</p>`，注意这里是`className`
 
 拿 click 事件为例，要在标签上绑定 click 事件，可以这样写
 
-```
+```jsx
 class Hello extends React.Component {
     render() {
         return (
@@ -126,7 +126,7 @@ class Hello extends React.Component {
 
 在 jsx 中使用循环，一般会用到`Array.prototype.map`（来自ES5标准）
 
-```
+```jsx
 class Hello extends React.Component {
     render() {
         const arr = ['a', 'b', 'c']
@@ -147,7 +147,7 @@ class Hello extends React.Component {
 
 jsx中使用判断一般会用到三元表达式（表达式也是放在`{}`中的），例如：
 
-```
+```jsx
 return (
   <div>
     <p>段落1</p>
@@ -178,7 +178,7 @@ return (
 
 创建`./app/containers/Hello/index.jsx`文件，将之前创建组件代码复制进去
 
-```
+```jsx
 import React from 'react'
 
 class Hello extends React.Component {
@@ -194,7 +194,7 @@ export default Hello
 
 然后`./app/index.jsx`中代码就可以这样写。
 
-```
+```jsx
 import Hello from './containers/Hello';
 
 render(
@@ -211,7 +211,7 @@ render(
 
 创建`./app/containers/Hello/subpage`目录，然后在其下创建三个文件`Carousel.jsx` `Recommend.jsx` `List.jsx`，分别写入相应的代码（看代码文件即可），然后`./app/containers/Hello/index.js`中即可这样写
 
-```
+```jsx
 import Carousel from './subpage/Carousel'
 import Recommend from './subpage/Recommend'
 import List from './subpage/List'
@@ -241,7 +241,7 @@ class Hello extends React.Component {
 
 创建`./app/components/Header/index.jsx`文件，简单写入一个组件的代码（见源码文件），然后在`./app/containers/index.jsx`中引用
 
-```
+```jsx
 import Header from '../../components/Header'
 
 class Hello extends React.Component {
@@ -268,7 +268,7 @@ Hello 页面会用到 Header，以后的其他页面也会用到 Header ，我�
 
 接着刚才 Header 的话题往下说，每个页面都会使用 Header ，但是 Header 上显示的标题每个页面肯定是不一样的。我们需要这样解决：页面中引用Header时，这样写 `<Header title="Hello页面"/>`，即给 Header 组件设置一个 title 属性。而在 Header 组件中可以这样取到
 
-```
+```jsx
     render() {
         return (
              <p>{this.props.title}</p>
@@ -282,7 +282,7 @@ Hello 页面会用到 Header，以后的其他页面也会用到 Header ，我�
 
 上面提到了 props 不能被自身修改，如果组件内部自身的属性发生变化，该怎么办？—— React 为我们提供给了 `state`，先看一个demo：
 
-```
+```jsx
 class Hello extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -303,7 +303,7 @@ class Hello extends React.Component {
 
 还有一点非常重要，**React 会实时监听每个组件的 props 和 state 的值，一旦有变化，会立刻更新组件，将结果重新渲染到页面上**，下面demo演示了`state`的变化，`props`也是一样的
 
-```
+```jsx
 class Hello extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -351,7 +351,7 @@ React 详细的生命周期可参见[这里](http://reactjs.cn/react/docs/compon
 
 初始化组件 state 数据，但是在 es6 的语法中，我们可以使用以下书写方式代替
 
-```js
+```jsx
 class Hello extends React.Component {
     constructor(props, context) {
         super(props, context);
