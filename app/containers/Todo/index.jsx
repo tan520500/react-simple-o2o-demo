@@ -14,15 +14,28 @@ class Todo extends React.Component {
         return (
             <div>
                <Input submitFn={this.submitFn.bind(this)}/>
-               <List todos={this.state.todos}/>
+               <List todos={this.state.todos} deleteFn={this.deleteFn.bind(this)}/>
             </div>
         )
     }
     submitFn(value) {
         let data = this.state.todos
-        data.unshift(value)
+        data.unshift({
+            id: data.length,
+            text: value
+        })
         this.setState({
             todos: data
+        })
+    }
+    deleteFn(id) {
+        let data = this.state.todos
+        this.setState({
+            todos: data.filter(item => {
+                if (item.id !== id) {
+                    return item
+                }
+            })
         })
     }
 }
