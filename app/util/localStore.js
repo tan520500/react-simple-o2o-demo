@@ -5,7 +5,9 @@ export default {
             value = localStorage.getItem(key)
         } catch (ex) {
             // 开发环境下提示error
-            __DEV__ && console.error('localStorage.getItem报错, ', ex.message)
+            if (__DEV__) {
+                console.error('localStorage.getItem报错, ', ex.message)
+            }
         } finally {
             return value
         }
@@ -16,7 +18,9 @@ export default {
             localStorage.setItem(key, value)
         } catch (ex) {
             // 开发环境下提示 error
-            __DEV__ && console.error('localStorage.setItem报错, ', ex.message)
+            if (__DEV__) {
+                console.error('localStorage.setItem报错, ', ex.message)
+            }
         }
     }
 }
