@@ -100,7 +100,7 @@ less 是 css 的语法糖，可以更高效低冗余的写 css，不熟悉的朋
     })
 ```
 
-打开`./app/util/localStore.js`可以看到`__DEV__ && console.error('localStorage.getItem报错, ', ex.message)`，即只有开发环境下才提示error，发布之后就不会提示了。（因为发布的命令中用到`NODE_ENV=production`）
+打开`./app/util/localStore.js`可以看到`if (__DEV__) { console.error('localStorage.getItem报错, ', ex.message) }`，即只有开发环境下才提示error，发布之后就不会提示了。（因为发布的命令中用到`NODE_ENV=production`）
 
 
 
