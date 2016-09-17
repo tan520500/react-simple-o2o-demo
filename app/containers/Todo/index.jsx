@@ -1,4 +1,5 @@
 import React from 'react'
+import PureRenderMixin from 'react-addons-pure-render-mixin'
 
 import Input from '../../components/Input'
 import List from '../../components/List'
@@ -6,6 +7,7 @@ import List from '../../components/List'
 class Todo extends React.Component {
     constructor(props, context) {
         super(props, context);
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
         this.state = {
             todos: []
         }
@@ -19,13 +21,12 @@ class Todo extends React.Component {
         )
     }
     submitFn(value) {
-        let data = this.state.todos
-        data.unshift({
-            id: data.length,
-            text: value
-        })
+        const id = this.state.todos.length
         this.setState({
-            todos: data
+            todos: this.state.todos.concat({
+                id: id,
+                text: value
+            })
         })
     }
     deleteFn(id) {
