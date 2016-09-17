@@ -82,13 +82,25 @@ less 是 css 的语法糖，可以更高效低冗余的写 css，不熟悉的朋
 
 在 package.json 中，输入以下代码，将这一串命令封装为`npm start`，这样就可以运行项目代码了。
 
-```
+```json
   "scripts": {
     "start": "NODE_ENV=dev webpack-dev-server --progress --colors"
   }
 ```
 
-代码中`NODE_ENV=dev`代表当前是开发环境下，这里的`"dev"`可被构建工具得到并做一些其他处理。下文中会通过一个插件来讲解其用处。
+代码中`NODE_ENV=dev`代表当前是开发环境下，这里的`"dev"`可被 js 代码中的`process.env.NODE_ENV`得到并做一些其他处理。
+
+### 定义环境全局变量
+
+以下定义，可使得代码通过`__DEV__`得到当前是不是开发模式。
+
+```js
+    new webpack.DefinePlugin({
+      __DEV__: JSON.stringify(JSON.parse((process.env.NODE_ENV == 'dev') || 'false'))
+    })
+```
+
+打开`./app/util/localStore.js`可以看到`__DEV__ && console.error('localStorage.getItem报错, ', ex.message)`，即只有开发环境下才提示error，发布之后就不会提示了。（因为发布的命令中用到`NODE_ENV=production`）
 
 
 
@@ -96,12 +108,66 @@ less 是 css 的语法糖，可以更高效低冗余的写 css，不熟悉的朋
 
 ## 配置 webpack.production.config.js
 
+开发环境下，可以不用考虑系统的性能，更多考虑的是如何增加开发效率。而发布系统时，就需要考虑发布之后的系统的性能，包括加载速度、缓存等。下面介绍发布用配置代码和开发用的不一样的地方。
 
-待续
+### 发布到 `./build` 文件夹中
 
+`path: __dirname + "/build",`
 
-## 版本管理 git
+### vendor
 
-待续
+将第三方依赖单独打包。即将 node_modules 文件夹中的代码打包为 vendor.js 将我们自己写的业务代码打包为 app.js。这样有助于缓存，因为在项目维护过程中，第三方依赖不经常变化，而业务代码会经常变化。
+
+### md5后缀
+
+为每个打包出来的文件都加md5后缀，例如`"/js/[name].[chunkhash:8].js"`，可使文件强缓存。
+
+### 分目录
+
+打包出来的不同类型的文件，放在不同目录下，例如图片文件将放在`img/`目录下
+
+### Copyright
+
+自动为打包出来的代码增加 copyright 内容
+
+### 分模块
+
+`new webpack.optimize.OccurenceOrderPlugin(),`
+
+### 压缩代码
+
+使用 Uglify 压缩代码，其中`warnings: false`是去掉代码中的 warning
+
+### 分离 css 和 js 文件
+
+开发环境下，css 代码是放在整个打包出来的那个 bundle.js 文件中的，发布环境下当然不能混淆在一起，使用`new ExtractTextPlugin('/css/[name].[chunkhash:8].css'),`将 css 代码分离出来。
+
+### npm run build
+
+打开`package.json`，查看以下代码。`npm start`和`npm run build`分别是运行代码和打包项目。另外，`"start"、"test"`可以不用`run`。
+
+```json
+  "scripts": {
+    "start": "NODE_ENV=dev webpack-dev-server --progress --colors",
+    "build": "rm -rf ./build && NODE_ENV=production webpack --config ./webpack.production.config.js --progress --colors"
+  },
+```
+
+这两个命令主要有以下区别：
+
+- 前者中默认使用 webpack.config.js 作为配置文件，而后者中强制使用 webpack.production.config.js 作为配置文件
+- 前者`NODE_ENV=dev`而后者`NODE_ENV=production`，标识不同的环境。而这个`"dev" "production"`可以在代码中通过`process.env.NODE_ENV`获取。
+
+### 最小化压缩 React
+
+以下配置可以告诉 React 当前是生产环境，请最小化压缩 js ，即把开发环境中的一些提示、警告、判断通通去掉，直流以下发布之后可用的代码。
+
+```js
+    new webpack.DefinePlugin({
+      'process.env':{
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      }
+    }),
+```
 
 
