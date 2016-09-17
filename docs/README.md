@@ -1,173 +1,386 @@
 
-# 搭建 webpack + React 开发环境
+# React 基础知识介绍
 
-我在实际工作中用百度 [fis3](http://fis.baidu.com/) 搭建 React 开发环境，但是放在整个前端社区中，webpack 肯定更适合大家，这里就用 webpack。如果之前未听说或者未用过 webpack 的同学，一定此机会恶补一下，也可以查阅[官网](https://webpack.github.io/)
+本章节会介绍一些 React 的基础知识和基本用法。已经入门 React 基础的同学，可以简单看看这篇文档并略过视频内容。React 零基础的同学还建议去慕课网学习[React入门基础](http://www.imooc.com/learn/504)。
 
-
-
-## 开始之前
-
- - 我目前使用的系统是 mac os 系统，使用 windows 的同学建议在执行本课程的命令行时，使用一个模拟 linux 命令的工具，例如 `xshell`
- - 能科学上网最好，否则就需要你在某些过程中耐心等待
+另外，本教程的代码将全部使用 es6 语法，教程中我会介绍一些用到的 es6 语法，但是不会从头讲解了，推荐阅读[es6入门](http://es6.ruanyifeng.com/)
 
 
+## hello world
 
+以下是一个最简单的demo，将一个最简单的组件渲染到页面上。
 
-## 初始化 npm 环境并安装插件
+```jsx
+import React from 'react'
+import { render } from 'react-dom'
 
-当前的 web 前端开发，基本使用 npm 管理第三方依赖（插件），不熟悉的同学这里抓紧补一下。
+// 定义组件
+class Hello extends React.Component {
+    render() {
+        // return 里面写jsx语法
+        return (
+            <p>hello world</p>
+        )
+    }
+}
 
-### 初始化 npm 环境
-
-首先保证有 node 和 npm 环境，运行`node -v`和`npm -v`查看
-
-进入项目目录，运行`npm init`按照步骤填写最终生成`package.json`文件，所有使用 npm 做依赖管理的项目，根目录下都会有一个这个文件，该文件描述了项目的基本信息以及一些第三方依赖项（插件）。详细的使用说明可查阅[官网文档](https://docs.npmjs.com/)，不过是英文的。
-
-### 安装插件
-
-已知我们将使用 webpack 作为构建工具，那么就需要安装相应插件，运行 `npm install webpack webpack-dev-server --save-dev` 来安装两个插件。
-
-又已知我们将使用 React ，也需要安装相应插件，运行 `npm i react react-dom --save`来安装两个插件。其中`i`是`install`的简写形式。
-
-安装完成之后，查看`package.json`可看到多了`devDependencies`和`dependencies`两项，根目录也多了一个`node_modules`文件夹。
-
-### `--save` 和 `--save-dev` 的区别
-
-`npm i`时使用`--save`和`--save-dev`，可分别将依赖（插件）记录到`package.json`中的`dependencies`和`devDependencies`下面。
-
-`dependencies`下记录的是项目在运行时必须依赖的插件，常见的例如`react` `jquery`等，即及时项目打包好了、上线了，这些也是需要用的，否则程序无法正常执行。
-
-`devDependencies`下记录的是项目在开发过程中使用的插件，例如这里我们开发过程中需要使用`webpack`打包，而我在工作中使用`fis3`打包，但是一旦项目打包发布、上线了之后，`webpack`和`fis3`就都没有用了，可卸磨杀驴。
-
-延伸一下，我们的项目有`package.json`，其他我们用的项目如`webpack`也有`package.json`，见`./node_modules/webpack/package.json`，其中也有`devDependencies`和`dependencies`。当我们使用`npm i webpack`时，`./node_modules/webpack/package.json`中的`dependencies`会被 npm 安装上，而`devDependencies`也没必要安装。
-
-
-
-
-## 配置 webpack.config.js
-
-为了提高学习效率，webpack 最最基础的用法，就不再挨个演示了（推荐一个非常好的[入门文章](https://segmentfault.com/a/1190000006178770)，以及[更多资料](https://github.com/frontendmap/frontendmap/blob/master/source-env/build/pack.md)）这里我们把项目中的`webpack.config.js`这个配置文件详细的讲解一下，过程中也会照顾 0 基础的同学。
-
-### 文件格式
-
-webpack.config.js 就是一个普通的 js 文件，符合 commonJS 规范。最后输出一个对象，即`module.exports = {...}`
-
-### 输入 & 输出
-
-这个比较基础，不过需要新建`./app/index.jsx`作为入口文件，目前项目中只有这一个入口文件。不过 webpack 支持多个入口文件，可查阅文档。
-
-输出就是一个`bundle.js`，js 和 css 都在里面，不过只有在开发环境下才用，发布代码的时候，肯定不能只有这么一个文件，接下来会讲到。
-
-### module
-
-针对不同类型的文件，使用不同的`loader`，当然使用之前要安装，例如`npm i style-loader css-loader --save-dev`。该项目代码中，我们用到的文件格式有：js/jsx 代码、css/less 代码、图片、字体文件。
-
-less 是 css 的语法糖，可以更高效低冗余的写 css，不熟悉的朋友可去[官网](http://lesscss.cn/)看看，非常简单。
-
-在加载 css/less 时用到了`postcss`，主要使用`autoprefixer`功能，帮助自动加 css3 的浏览器前缀，非常好用。
-
-编译 es6 和 jsx 语法时，用到家喻户晓的`babel`，另外还需增加一个`.babelrc`的配置文件。
-
-### plugins
-
-使用 html 模板（需要`npm i html-webpack-plugin --save-dev`），这样可以将输出的文件名（如`./bundle.js`）自动注入到 html 中，不用我们自己手写。手写的话，一旦修改就需要改两个地方。
-
-使用热加载和自动打开浏览器插件
-
-### devServer
-
-对 webpack-dev-server 的配置
-
-### npm start
-
-在 package.json 中，输入以下代码，将这一串命令封装为`npm start`，这样就可以运行项目代码了。
-
-```json
-  "scripts": {
-    "start": "NODE_ENV=dev webpack-dev-server --progress --colors"
-  }
+// 渲染组件到页面
+render(
+    <Hello/>,
+    document.getElementById('root')
+)
 ```
 
-代码中`NODE_ENV=dev`代表当前是开发环境下，这里的`"dev"`可被 js 代码中的`process.env.NODE_ENV`得到并做一些其他处理。
+**深入一下，这里`import React from 'react'`引用的是什么？**
 
-### 定义环境全局变量
+这里的`'react'`对应的就是`./package.json`文件中`dependencies`中的`'react'`，即在该目录下用`npm install`安装的 react 。npm 安装的 react 的物理文件是存放在 `./node_modules/react`中的，因此引用的东西肯定就在这个文件夹里面。
 
-以下定义，可使得代码通过`__DEV__`得到当前是不是开发模式。
+打开`./node_modules/react/package.json`找到`  "main": "react.js",`，这里的`main`即指定了入口文件，即`./node_modules/react/react.js`这个文件。那么，问题的答案自然就出来了。
+
+
+
+
+
+
+## jsx 语法
+
+React 里面写模板要使用 jsx 语法，它其实和 html 很相似但是又有那么几点不一样。下面简单介绍一下 jsx 语法的一些特点：
+
+### 使用一个父节点包裹
+
+jsx 中不能一次性返回零散的多个节点，如果有多个请包涵在一个节点中。例如，
+
+```
+// 三个 <p> 外面必须再包裹一层 <div>
+return (
+  <div>
+    <p>段落1</p>
+    <p>段落2</p>
+    <p>段落3</p>
+  </div>
+)
+```
+
+再例如：
+
+```
+// { } 中返回的两个 <p> 也要用 <div> 包裹
+return (
+  <div>
+    <p>段落1</p>
+    {
+      true 
+      ? <p>true</p>
+      : <div>
+        <p>false 1</p>
+        <p>false 2</p>
+      </div>
+    }
+  </div>
+)
+```
+
+### 注释
+
+jsx 中用`{/*  */}`的注释形式
+
+```
+        return (
+            // jsx 外面的注释
+            <div>
+                {/* jsx 里面的注释 */}
+                <p>hello world</p>
+            </div>
+        )
+```
+
+### 样式
+
+对应 html 的两种形式，jsx 的样式可以这样写：
+css样式：`<p className="class1">hello world</p>`，注意这里是`className`，而 html 中是`class`
+内联样式：`<p style={{display: 'block', fontSize: '20px'}}>hello world</p>`，注意这里的`{{...}}`，还有`fontSize`的驼峰式写法
+
+### 事件
+
+拿 click 事件为例，要在标签上绑定 click 事件，可以这样写
+
+```
+class Hello extends React.Component {
+    render() {
+        return (
+            <p onClick={this.clickHandler.bind(this)}>hello world</p>
+        )
+    }
+
+    clickHandler(e) {
+        // e 即js中的事件对象，例如 e.preventDefault()
+        // 函数执行时 this 即组件本身，因为上面的 .bind(this)
+        console.log(Date.now())
+    }
+}
+```
+
+注意，`onClick`是驼峰式写法，以及`.bind(this)`的作用
+
+### 循环
+
+在 jsx 中使用循环，一般会用到`Array.prototype.map`（来自ES5标准）
+
+```
+class Hello extends React.Component {
+    render() {
+        const arr = ['a', 'b', 'c']
+        return (
+            <div>
+                {arr.map((item, index) => {
+                    return <p key={index}>this is {item}</p>
+                })}
+            </div>
+        )
+    }
+}
+```
+
+注意，`arr.map`是包裹在`{}`中的，`key={index}`有助于React的渲染优化，jsx中的`{}`可放一个可执行的 js 程序或者变量
+
+### 判断
+
+jsx中使用判断一般会用到三元表达式（表达式也是放在`{}`中的），例如：
+
+```
+return (
+  <div>
+    <p>段落1</p>
+    {
+      true 
+      ? <p>true</p>
+      : <p>false</p>
+      </div>
+    }
+  </div>
+)
+```
+
+也可以这样使用：
+
+`<p style={{display: true ? 'block' ? 'none'}}>hello world</p>`
+
+
+
+
+
+
+## 代码分离
+
+之前的demo代码都是在一个文件中，实际开发中不可能是这样子的，因此这里就先把组件的代码给拆分开。我们将使用 es6 的模块管理规范。
+
+### page 层
+
+创建`./app/containers/Hello/index.jsx`文件，将之前创建组件代码复制进去
+
+```
+import React from 'react'
+
+class Hello extends React.Component {
+    render() {
+        return (
+             <p>hello world</p>
+        )
+    }
+}
+
+export default Hello
+```
+
+然后`./app/index.jsx`中代码就可以这样写。
+
+```
+import Hello from './containers/Hello';
+
+render(
+    <Hello/>,
+    document.getElementById('root')
+)
+```
+
+注意，代码`import Hello from './containers/Hello';`这里可以写成`./containers/Hello/index.jsx`也可以写成`./containers/Hello/index`
+
+### subpage 层
+
+如果`Hello`组件再稍微复杂一点，那么把代码都放一块也会变得复杂，接下来我们再拆分。
+
+创建`./app/containers/Hello/subpage`目录，然后在其下创建三个文件`Carousel.jsx` `Recommend.jsx` `List.jsx`，分别写入相应的代码（看代码文件即可），然后`./app/containers/Hello/index.js`中即可这样写
+
+```
+import Carousel from './subpage/Carousel'
+import Recommend from './subpage/Recommend'
+import List from './subpage/List'
+
+class Hello extends React.Component {
+    render() {
+        return (
+            <div>
+                <p>hello world</p>
+                <hr/>
+                <Carousel/>
+                <Recommend/>
+                <List/>
+            </div>
+        )
+    }
+}
+```
+
+注意，这里`import`时`.jsx`后缀省略了。
+
+### component 层
+
+以上介绍的是页面和复杂页面的拆分，但那都是页面层级的，即`page`层。这里复杂页面拆分为`subpage`其实没啥特别的，就是把复杂页面的代码拆分一下，会更加符合**开放封闭原则**。而且，只有复杂页面才有必要去拆分，简单页面根本没必要拆分。因此，无论是`page`还是`subpage`它都是页面级别的。
+
+页面的特点是其独特性，一个页面就需要创建一个文件（如果两个页面可以共用一个文件，这是设计不合理，得治）。而页面其中的内容，就不一定是这样子了。例如，现在的APP每个页面最上面都会有个 header ，即可以显示标题，可以返回。每个页面都有，样子差不多，难道我们要为每个页面都做一个？——当然不是。
+
+创建`./app/components/Header/index.jsx`文件，简单写入一个组件的代码（见源码文件），然后在`./app/containers/index.jsx`中引用
+
+```
+import Header from '../../components/Header'
+
+class Hello extends React.Component {
+    render() {
+        return (
+            <div>
+                <Header/>
+                {/* 省略其他内容 */}
+            </div>
+        )
+    }
+}
+```
+
+Hello 页面会用到 Header，以后的其他页面也会用到 Header ，我们把多个页面都可能用到的功能，封装到一个组件中，代码放在`./app/components`下。
+
+
+
+
+
+## 数据传递 & 数据变化
+
+### props
+
+接着刚才 Header 的话题往下说，每个页面都会使用 Header ，但是 Header 上显示的标题每个页面肯定是不一样的。我们需要这样解决：页面中引用Header时，这样写 `<Header title="Hello页面"/>`，即给 Header 组件设置一个 title 属性。而在 Header 组件中可以这样取到
+
+```
+    render() {
+        return (
+             <p>{this.props.title}</p>
+        )
+    }
+```
+
+在 React 中，父组件给子组件传递数据时，就是以上方式，通过给子组件设置 props 的方式，子组件取得 props 中的值即可完成数据传递。被传递数据的格式可以是任何 js 可识别的数据结构，上面demo是一个字符串。**React 中，props 一般只作为父组件给子组件传递数据用，不要试图去修改自己的 props ，除非你想自找麻烦**
+
+## props && state
+
+上面提到了 props 不能被自身修改，如果组件内部自身的属性发生变化，该怎么办？—— React 为我们提供给了 `state`，先看一个demo：
+
+```
+class Hello extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            // 显示当前时间
+            now: Date.now()
+        }
+    }
+    render() {
+        return (
+            <div>
+                <p>hello world {this.state.now}</p>
+            </div>
+        )
+    }
+}
+```
+
+还有一点非常重要，**React 会实时监听每个组件的 props 和 state 的值，一旦有变化，会立刻更新组件，将结果重新渲染到页面上**，下面demo演示了`state`的变化，`props`也是一样的
+
+```
+class Hello extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            // 显示当前时间
+            now: Date.now()
+        }
+    }
+    render() {
+        return (
+            <div>
+                <p onClick={this.clickHandler.bind(this)}>hello world {this.state.now}</p>
+            </div>
+        )
+    }
+    clickHandler() {
+        // 设置 state 的值的时候，一定要用 this.setState ，不能直接赋值修改
+        this.setState({
+            now: Date.now()
+        })
+    }
+}
+```
+
+
+## 智能组件 & 木偶组件
+
+这是用 React 做系统设计时的两个非常重要的概念。虽然在 React 中，所有的单位都叫做“组件”，但是通过以上例子，我们还是将它们分别放在了`./app/containers`和`./app/components`两个文件夹中。为何要分开呢？
+
+- **智能组件** 在日常开发中，我们也简称**“页面”**。为何说它“智能”，因为它只会做一些很聪明的事儿，脏活累活都不干。它只对数据负责，只需要获取了数据、定义好数据操作的相关函数，然后将这些数据、函数直接传递给具体实现的组件即可。
+- **木偶组件** 这里“木偶”一词用的特别形象，它总是被人拿线牵着。它从智能组件（或页面）那里接受到数据、函数，然后就开始做一些展示工作，它的工作就是把拿到的数据展示给用户，函数操作开放给用户。至于数据内容是什么，函数操作是什么，它不关心。
+
+以上两个如果不是理解的很深刻，待把课程学完再回头看一下这两句话，相信会理解的。
+
+
+
+
+## 生命周期
+
+React 详细的生命周期可参见[这里](http://reactjs.cn/react/docs/component-specs.html)，也可查阅本文档一开始的视频教程。这里我们重点介绍这个项目开发中常用的几个生命周期函数（hook），相信你在接下来的 React 开发中，也会常用这些。
+
+以下声明周期，也没必要每个都写demo来解释，先简单了解一下，后面会根据实际的例子来解释，这样会更加易懂。
+
+- **`getInitialState`**
+
+初始化组件 state 数据，但是在 es6 的语法中，我们可以使用以下书写方式代替
 
 ```js
-    new webpack.DefinePlugin({
-      __DEV__: JSON.stringify(JSON.parse((process.env.NODE_ENV == 'dev') || 'false'))
-    })
+class Hello extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        // 初始化组件 state 数据
+        this.state = {
+            now: Date.now()
+        }
+    }
+}
 ```
 
-打开`./app/util/localStore.js`可以看到`__DEV__ && console.error('localStorage.getItem报错, ', ex.message)`，即只有开发环境下才提示error，发布之后就不会提示了。（因为发布的命令中用到`NODE_ENV=production`）
+- **`render`**
 
+最常用的hook，返回组件要渲染的模板。
 
+- **`comopentDidMount`**
 
+组件第一次加载时渲染完成的事件，一般在此获取网络数据。实际开始项目开发时，会经常用到。
 
+- **`shouldComponentUpdate`**
 
-## 配置 webpack.production.config.js
+主要用于性能优化，React 的性能优化也是一个很重要的话题，后面一并讲解。
 
-开发环境下，可以不用考虑系统的性能，更多考虑的是如何增加开发效率。而发布系统时，就需要考虑发布之后的系统的性能，包括加载速度、缓存等。下面介绍发布用配置代码和开发用的不一样的地方。
+- **`componentDidUpdate`**
 
-### 发布到 `./build` 文件夹中
+组件更新了之后触发的事件，一般用于清空并更新数据。实际开始项目开发时，会经常用到。
 
-`path: __dirname + "/build",`
+- **`componentWillUnmount`**
 
-### vendor
-
-将第三方依赖单独打包。即将 node_modules 文件夹中的代码打包为 vendor.js 将我们自己写的业务代码打包为 app.js。这样有助于缓存，因为在项目维护过程中，第三方依赖不经常变化，而业务代码会经常变化。
-
-### md5后缀
-
-为每个打包出来的文件都加md5后缀，例如`"/js/[name].[chunkhash:8].js"`，可使文件强缓存。
-
-### 分目录
-
-打包出来的不同类型的文件，放在不同目录下，例如图片文件将放在`img/`目录下
-
-### Copyright
-
-自动为打包出来的代码增加 copyright 内容
-
-### 分模块
-
-`new webpack.optimize.OccurenceOrderPlugin(),`
-
-### 压缩代码
-
-使用 Uglify 压缩代码，其中`warnings: false`是去掉代码中的 warning
-
-### 分离 css 和 js 文件
-
-开发环境下，css 代码是放在整个打包出来的那个 bundle.js 文件中的，发布环境下当然不能混淆在一起，使用`new ExtractTextPlugin('/css/[name].[chunkhash:8].css'),`将 css 代码分离出来。
-
-### npm run build
-
-打开`package.json`，查看以下代码。`npm start`和`npm run build`分别是运行代码和打包项目。另外，`"start"、"test"`可以不用`run`。
-
-```json
-  "scripts": {
-    "start": "NODE_ENV=dev webpack-dev-server --progress --colors",
-    "build": "rm -rf ./build && NODE_ENV=production webpack --config ./webpack.production.config.js --progress --colors"
-  },
-```
-
-这两个命令主要有以下区别：
-
-- 前者中默认使用 webpack.config.js 作为配置文件，而后者中强制使用 webpack.production.config.js 作为配置文件
-- 前者`NODE_ENV=dev`而后者`NODE_ENV=production`，标识不同的环境。而这个`"dev" "production"`可以在代码中通过`process.env.NODE_ENV`获取。
-
-### 最小化压缩 React
-
-以下配置可以告诉 React 当前是生产环境，请最小化压缩 js ，即把开发环境中的一些提示、警告、判断通通去掉，直流以下发布之后可用的代码。
-
-```js
-    new webpack.DefinePlugin({
-      'process.env':{
-        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      }
-    }),
-```
+组件在销毁之前触发的事件，一般用户存储一些特殊信息，以及清理`setTimeout`事件等。
 
 
