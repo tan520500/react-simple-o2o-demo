@@ -19,13 +19,12 @@ class Todo extends React.Component {
         )
     }
     submitFn(value) {
-        let data = this.state.todos
-        data.unshift({
-            id: data.length,
-            text: value
-        })
+        const id = this.state.todos.length
         this.setState({
-            todos: data
+            todos: this.state.todos.concat({
+                id: id,
+                text: value
+            })
         })
     }
     deleteFn(id) {
