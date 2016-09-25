@@ -1,7 +1,7 @@
 
 # 介绍 Redux
 
-由于此次教程主要针对 React ，因此对 Redux 的介绍不会非常详细，只将一些我们日常用的比较多的，详细的用法可见[Redux官网](http://redux.js.org/)
+Redux是一个数据状态管理插件，搭配 React 特别合适，详细的用法可见[Redux官网](http://redux.js.org/)
 
 ## 使用场景
 
