@@ -1,3 +1,3 @@
 # react-simple-o2o-demo
 
-代码尚在开发中
+React + React-router + Redux 的前端代码框架，文档参见[这里](./docs/README.md)
