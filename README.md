@@ -1,3 +1,3 @@
 # react-simple-o2o-demo
 
-代码尚在开发中
+fetch 获取/提交数据，以及开发环境下的数据 Mock，文档参见[这里](./docs/README.md)

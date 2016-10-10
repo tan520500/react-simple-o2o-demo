@@ -11,8 +11,11 @@ const store = configureStore()
 
 import RouteMap from './router/routeMap'
 
-import { testFetch } from './fetch/test.js'
-testFetch();
+// 测试 fetch 的功能
+import { getData, postData } from './fetch/test.js'
+// import { getData, postData } from './fetch/data.js'
+getData();
+postData();
 
 render(
     <Provider store={store}>
