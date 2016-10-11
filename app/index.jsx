@@ -11,9 +11,6 @@ const store = configureStore()
 
 import RouteMap from './router/routeMap'
 
-import { testFetch } from './fetch/test.js'
-testFetch();
-
 render(
     <Provider store={store}>
         <RouteMap history={hashHistory}/>

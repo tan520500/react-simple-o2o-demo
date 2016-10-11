@@ -1,12 +1,9 @@
 import React from 'react'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 
-import HomeHeader from '../../components/HomeHeader'
-import Category from '../../components/Category'
-import Ad from './subpage/Ad'
-import List from './subpage/List'
+import './style.less'
 
-class Home extends React.Component {
+class HomeHeader extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
@@ -14,13 +11,10 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                <HomeHeader/>
-                <Category/>
-                <Ad/>
-                <List/>
+                <h1>HomeHeader</h1>
             </div>
         )
     }
 }
 
-export default Home
+export default HomeHeader
