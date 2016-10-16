@@ -1,0 +1,47 @@
+#home-category {
+    background-color: #fff;
+    padding: 10px;
+
+    .carousel-item {
+        ul {
+            width: 100%;
+            height: auto;
+        }
+        li {
+            display: block;
+            list-style: none;
+            width: 20%;
+            height: 50px;
+            background-repeat: no-repeat;
+            background-size: 20px auto;
+            background-position: 0 0;
+            text-align: center;
+        }
+        li.jingdian {
+            background-image: url(./imgs/02jingdian_icon_1.png);
+        }
+        li.ktv {
+            background-image: url(./imgs/02KTVicon_2.png);
+        }
+    }
+
+    .index-container {
+        ul {
+            width: 100%;
+            height: auto;
+            text-align: center;
+        }
+        li {
+            list-style: none;
+            display: inline-block;
+            height: 8px;
+            width: 8px;
+            border-radius: 4px;
+            background-color: #ccc;
+            margin: 0 3px;
+        }
+        li.selected {
+            background-color: rgb(233, 32, 61);
+        }
+    }
+}
