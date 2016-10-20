@@ -1,35 +1,68 @@
-# 选择城市页面的开发
+# 搜索页面的开发
 
-介绍选择城市页面的开发过程。
+介绍搜索页面的开发过程。
 
 
-## 链接到“选择城市”页面
+## 进入搜索页面的入口
 
-通过`react-router`来做页面之间的路由跳转，代码如下。这个`<Link>`最终会被 React 处理成`<a>`标签。注意，这里的路由跳转就是改变 location 的 hash，根据 hash 变化来重新渲染页面。这也是 SPA 程序的特点。
+### 首页顶部搜索框
+
+首页顶部搜索框的代码在`./app/components/HomeHeader`里面，此前只是有一个简单的`<input>`然后做了一些UI的样式优化，现在我们要改一下。
+
+改之前还需要了解一个React中的概念————**约束性和非约束性组件**，听着挺高大上的，简单说来就是我们如何用组件的属性或状态来表示各种 input （text、radio、checkbox等）的值，这样就使得组件化更加纯粹更加抽象，更加不依赖于DOM。举例子
+
+React 中写一个最简单的输入框可以这样写，这个 `defaultValue` 其实就是原生DOM中的 `value` 属性。
 
 ```jsx
-import { Link } from 'react-router'
-
-<Link to="/city">
-    <span>{this.props.cityName}</span>
-    &nbsp;
-    <i className="icon-angle-down"></i>
-</Link>
+<input type="text" defaultValue="a" />
 ```
 
-## 通用的 header 组件
+而 React 还建议我们这么写。通过上下两种代码，就能体会这个概念的区别了，下面代码具体的意思就是：将`input`的值实时保存到组件的`state`中，成了组件的一个状态，而不是一个DOM的值。*注意，以下代码不会出现死循环，React做了特殊处理*
 
-选择城市页面、以及其他好多页面，上面都有一个 header，功能有两个：第一，返回上一个页面；第二，显示该页面标题。那么我们肯定会把它封装成一个组件，标题作为属性传递进去，发挥 React 的优势。具体可看源码。
+```jsx
+<input type="text" value={this.state.name} onChange={this.handleChange} />
 
-## 关于 GPS 定位城市
+//...省略部分代码
+handleChange: function(e) {
+  this.setState({name: e.target.value});
+}
+```
 
-讲 Home 页面开发的时候，如果 cookie 中没有数据，则默认显示为“北京市”。其实这里可以使用 GPS 定位城市，并且存储到 cookie 当中。但是本教程核心人物是介绍 React，和 React 关系不大的技术能省略即省略，不至于使教程过于冗长。
+而我们就是要根据下面的这段代码，来修改一下目前的顶部搜索框。直接看源代码即可。
 
-## 页面开发过程
+最后，我们使用`hashHistory.push`来做页面的跳转，其中的汉字要注意进行 url 编码。例如输入“火锅”进行搜索，要跳转的 url 就是`/search/all/%E7%81%AB%E9%94%85`（url 的规则我们稍后讲到）
 
-根据源代码讲解。**注意存储选择城市的过程**
 
-## 选择城市之后返回首页
+### 首页轮播导航
 
-重新选择了城市之后，返回到首页中，数据应该是不同的。这应该是后端处理，我们就不再做重复的工作，提供一份数据做例子即可。通过 log 可以看到，后端已经接收到数据了。
+首页轮播图的代码在`./app/components/Category`中，现在我们要做的就是将每个类别都加上链接，使用`<Link>`组件来做链接，例如`<Link to="/search/jingdian"> ..... </Link>`，直接看源码。
+
+
+## 路由规则
+
+路由规则的定义在`./app/router/routeMap.jsx`中，其中搜索页的路由规则定义稍微复杂，即`<Route path='/search/:category(/:keyword)' component={Search}/>`。其中`/search`是路由的 path，`/:category`是一个必选参数，`(/:keyword)`是一个可选参数。从上面的两个例子可以看出他们的对应关系：
+
+- `/search/all/%E7%81%AB%E9%94%85`，两个参数都有
+- `/search/jingdian`，只给出第一个参数，第二个参数（可选）为空
+
+要在目标页面获取参数，可以这样做。即参数已经作为 React 组件的一个属性来获取了，这一步是 React-router 帮我们做的。
+
+```js
+const params = this.props.params
+console.log('category param: ' + params.category)
+console.log('key param:' + params.keyword)
+```
+
+
+## 搜索页面
+
+### 页面分析
+
+### 抽取 input 组件
+
+### 借用 List 组件
+
+### 模拟数据说明
+
+数据是模拟的、演示用，并不一定真实。前端开发人员只要保证传递给后端正确的参数（category和keyword），至于数据如何返回，交给后端来做就是了，分工明确即可。
 
