@@ -68,9 +68,26 @@ console.log('key param:' + params.keyword)
 
 ### 抽取 input 组件
 
+新建一个`./app/components/SearchInput`组件，这也是一个**约束性组件**，之前已经介绍过了。另外，该组件接收两个属性，具体的实现去看源码。
+
+- `value` input 的默认值
+- `enterHandle` 键盘回车事件
+
+将 input 组件抽离出来之后，`./app/components/HomeHeader`中引用这个 input 组件，这样`HomeHeader`的代码就变得简单多了，具体看源码。
+
+### 开发 SearchHeader 组件
+
+input 抽离出来之后，我们还需要为搜索页面做一个 header，新建`,/app/components/SearchHeader`组件，具体看源码。
+
 ### 借用 List 组件
+
+要做搜索页面中的结果列表，就涉及到和服务器的交互，要获取数据。在某一个模块有单独的数据交互，我们就需要将该模块单独拆分到一个 subpage 当中，新建`./app/container/Search/subpage/List.jsx`，然后在 Search 页面将其引用，将使得模块之间没有太多耦合，易于维护。至于这个模块内部有如何复杂的数据交互操作，我们在模块内部写，不要暴露出来。
+
+当然，这里会复用到之前写过的`./app/components/List`组件。具体看源码。
+
+注意，组件中`componentDidUpdate`所处理的事情，是已经进入了搜索结果页之后，又再次重新输入关键字进行搜索。此时不会触发组件的`componentDidMount`事件，而是将会触发`componentDidUpdate`事件，因此此时组件没有重新构建，而是发生了部分属性或者状态的更新。详情参见源代码。
 
 ### 模拟数据说明
 
-数据是模拟的、演示用，并不一定真实。前端开发人员只要保证传递给后端正确的参数（category和keyword），至于数据如何返回，交给后端来做就是了，分工明确即可。
+数据是模拟的、演示用，并不一定真实。前端开发人员只要保证传递给后端正确的参数（page、city，category和keyword），至于数据如何返回，交给后端来做就是了，分工明确即可。
 
