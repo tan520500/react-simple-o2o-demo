@@ -16,7 +16,7 @@ class OrderList extends React.Component {
         return (
             <div>
                 {data.map((item, index) => {
-                    return <Item key={index} data={item}/>
+                    return <Item key={index} data={item}  submitComment={this.props.submitComment.bind(this)}/>
                 })}
             </div>
         )
