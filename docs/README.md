@@ -1,70 +1,57 @@
-# 收藏和购买的开发
+# 用户主页的开发
 
-介绍收藏和购买的开发过程。
+用户主页的开发过程
 
-## 开发组件
+## 分析页面
 
-从页面开始说起。为`Detail`页面新建一个`subpage/buy/jsx`的子页面，再新建并引用一个`./app/components/BuyAndStore`的组件。所有的数据管理和数据操作，都在子页面中做，组件只负责显示和触发事件即可。
+页面的 Header 我们可以直接引用`./app/components/Header`组件，但是需要一个简单的改造，下文细说。接下来是用户基本信息，直接从 Redux 读取并显示即可。再往下是用户购买的订单，可以做一个 subpage 来显示。
 
-点击购买或者收藏的时候，我们首先要判断登录状态，如果用户未登录就请先去登录。不过跳转到登录页面之后，登录成功了，要再跳转回到刚才的页面。这个问题我们在做登录页面的时候说过，这里就用到了。
+## 改造 Header
 
-```javascript
-    // 检查登录状态
-    loginCheck() {
-        const id = this.props.id
-        const userinfo = this.props.userinfo
-        if (!userinfo.username) {
-            // 跳转到登录页面的时候，要传入目标router，以便登录完了可以自己跳转回来
-            hashHistory.push('/Login/' + encodeURIComponent('/detail/' + id))
-            return false
-        }
-        return true
-    }
+此前的`Header`组件中，返回时直接写了`hashHistory.push(hashHistory)`，简单粗暴。但是用户主页是从 Login 页面过来的，如果这样返回到 Login 页面，它判断用户已经登录了，会再次跳转到用户主页，就死循环了。因此我们这里要干预`Header`组件的返回事件，让它乖乖的返回的 Home 页面。
+
+在调用组件时
+
+```jsx
+<Header title="用户主页" backRouter="/home"/>
 ```
 
-## 使用 Redux 做收藏功能
-
-学习至今，一开始讲解的 Redux 的用法估计已经忘记的差不多了，因为我们本教程此前用的太少，就存了用户信息中的城市和用户名，其他的就没有了。其实本教程在设计之初是没有“收藏”功能的，但是做到当前，我发现 Redux 用的并不多，因此就临时加上了“收藏”功能，为的是让学习者真正的掌握 Redux 的使用。
-
-**Redux的使用场景是：多个组件都可能用到的公共信息，就存放在 Redux 中来管理**。例如我们已经在 Redux 中应用的用户信息（城市、用户名）在很多组件中都可能用到。“收藏”功能也是如此，在显示收藏列表时候回用到，在每个商户详情页，都需要判断这个商户是否已经被收藏了。
-
-根据 Redux 的开发规范，先创建三个文件。具体看源码进行解读。
-
-- `./app/actions/store.js` 定义 actions
-- `./app/constants/store.js` 定义用到的常量
-- `./app/reducer/store.js` 定义数据变化规则，注意`./app/reducer/index.js`也有相应的变化
-
-然后在刚刚创建的`subpage/buy.jsx`子页面中使用 actions，实现添加和删除的功能
+组件中的返回事件
 
 ```js
-    // 收藏事件
-    storeHandle() {
-        // 验证登录，未登录则return
-        const loginFlag = this.loginCheck()
-        if (!loginFlag) {
-            return
-        }
-
-        const id = this.props.id
-        const storeActions = this.props.storeActions
-        if (this.state.isStore) {
-            // 已经被收藏了，则取消收藏
-            storeActions.rm({id: id})
+    clickHandle() {
+        const backRouter = this.props.backRouter
+        if (backRouter) {
+            hashHistory.push(hashHistory)
         } else {
-            // 未收藏，则添加到收藏中
-            storeActions.add({id: id})
+            window.history.back()
         }
-        // 修改状态
-        this.setState({
-            isStore: !this.state.isStore
-        })
     }
 ```
 
-最后，至于收藏的内容如何显示出来，我想交给大家自己去思考，你现在没有时间写代码实现它不要紧，只要你能把实现的方法想通了就OK了。学习至今如果你还不能解决这个问题，我会为你感到很遗憾。
+## 验证登录
 
+如果用户未登录就进入页面，要踢出到登录页面中，即
 
-## 模拟购买功能
+```js
+    componentDidMount() {
+        // 如果未登录，跳转到登录页面
+        if (!this.props.userinfo.username) {
+            hashHistory.push('/Login')
+        }
+    }
+```
 
-这里用户点击“登录”之后，什么都没有做直接就跳转到了用户主页，因为用户主页可以看到用户购买过的列表。这里的购买功能是模拟的，没有真实 app 里面那么复杂的付款流程和购物车管理功能。时间、精力都有限，只能把最针对 React 的东西讲解出来，和 React 关系不大又特别冗长的功能，我们就直接绕过。
+## 显示用户信息
 
+创建一个`./app/components/UserInfo`用以显示用户信息，用户信息可直接从 Redux 中读取。
+
+## 订单列表
+
+订单列表涉及到数据交互，因此做一个`subpage/OrderList.jsx`的子页面来整体处理数据。子页面获取了数据之后，直接传递给`./app/components/OrderList`组件，让组件来展示数据。具体看源代码。
+
+另外，订单列表的内容部分是通过组件来展示的，而“您的订单”标题就不是组件的一部分，它是页面的一部分，因此它的样式就由子页面来控制，放在`subpage/style.less`来统一管理。此前的许多子页面都是这样定义的，这样层次会更加清晰一些。
+
+## 订单数据
+
+跟所有的列表数据一样，此处的订单数据也是假数据，为了演示用。
